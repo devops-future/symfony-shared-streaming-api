@@ -1,0 +1,18 @@
+token_refresh:
+    path:       /api/token/refresh
+    controller: gesdinet.jwtrefreshtoken::refresh
+
+user_register:
+    path: /api/user/register
+    controller: App\Controller\UserController::userRegister
+    methods: POST
+
+login_check:
+    path: /api/login/token
+    methods: [POST]
+
+app.swagger_ui:
+    path: /doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+

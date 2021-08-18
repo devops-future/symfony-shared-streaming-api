@@ -1,0 +1,73 @@
+security:
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+
+    providers:
+        entity_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    firewalls:
+        audio_list:
+            pattern: ^/api/audio/list
+            stateless: true
+            anonymous: true
+            
+        room_list:
+            pattern: ^/api/room/list
+            stateless: true
+            anonymous: true
+
+        room_view:
+            pattern: ^/api/room/view
+            stateless: true
+            anonymous: true
+
+        refresh:
+            pattern:  ^/api/token/refresh
+            stateless: true
+            anonymous: true
+
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        doc:
+            pattern: ^/doc
+            security: false
+        
+        login:
+            pattern:  ^/api/login
+            stateless: true
+            anonymous: true
+            json_login:
+                check_path: /api/login/token
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        user_register:
+            pattern:  ^/api/user/register
+            stateless: true
+            anonymous: true
+
+        main:
+            pattern:  ^/
+            stateless: true
+            anonymous: false
+            provider: entity_provider
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+            http_basic: ~
+        
+        
+
+    access_control:
+        - { path: ^/api/audio/list, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/room/view, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/room/list, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/user/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
